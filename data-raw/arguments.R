@@ -1,6 +1,8 @@
 library(here)
 library(tidyverse)
 
+source(here("R", "to_span_string.R"))
+
 load(here("data", "works.rda"))
 
 arguments <- data_frame(

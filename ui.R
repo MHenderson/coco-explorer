@@ -1,7 +1,7 @@
 library(plotly)
 library(shiny)
 
-ggplot2::theme_set(hrbrthemes::theme_ipsum())
+ggplot2::theme_set(hrbrthemes::theme_ipsum_rc())
 
 corpora <- list(
   "19th Century Novels" = "19C",
@@ -43,7 +43,7 @@ shinyUI(fluidPage(
         label = h3("Span"),
         min = -5, 
         max = 5,
-        value = c(-5, 5)
+        value = c(-3, 3)
       ),
       numericInput(
         inputId = "fdr",
@@ -51,7 +51,7 @@ shinyUI(fluidPage(
         min = 0.01,
         max = 1,
         step = 0.01,
-        value = 0.02
+        value = 0.01
       )
     ),
     
