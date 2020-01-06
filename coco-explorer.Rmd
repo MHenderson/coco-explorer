@@ -1,19 +1,22 @@
 ---
 title: "Corpus Co-occurrence Explorer"
-output: 
-  flexdashboard::flex_dashboard:
+resource_files:
+- data/results.rds
+runtime: shiny
+output:
+  flexdashboard::flex_dashboard: null
   orientation: columns
 vertical_layout: fill
-runtime: shiny
 ---
   
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(tidyverse)
 library(here)
 
-ggplot2::theme_set(hrbrthemes::theme_ipsum())
+#ggplot2::theme_set(hrbrthemes::theme_ipsum())
 
-load(here("data/results.rda"))
+results <- read_rds(here("data", "results.rds"))
 
 corpora <- list(
   "19th Century Novels" = "19C",
@@ -24,13 +27,13 @@ corpora <- list(
 )
 
 left_default <- "austen"
-right_default <- "19C"
+right_default <- "hardy"
 ```
 
 Inputs {.sidebar}
 -----------------------------------------------------------------------
   
-```{r}
+```{r left_corpus}
 selectInput(
   inputId = "left_corpus",
   label = h3("Left corpus"), 
@@ -38,7 +41,7 @@ selectInput(
   selected = left_default)
 ```
 
-```{r}
+```{r right_corpus}
 selectInput(
   inputId = "right_corpus",
   label = h3("Right corpus"), 
@@ -46,7 +49,7 @@ selectInput(
   selected = right_default)
 ```
 
-```{r}
+```{r nodes}
 radioButtons(
   inputId = "nodes",
   label = h3("Nodes"),
@@ -56,7 +59,7 @@ radioButtons(
 )
 ```
 
-```{r}
+```{r span}
 sliderInput(
   inputId = "span",
   label = h3("Span"),
@@ -66,7 +69,7 @@ sliderInput(
 )
 ```
 
-```{r}
+```{r fdr}
 numericInput(
   inputId = "fdr",
   label = h3("False Discovery Rate"),
@@ -82,7 +85,7 @@ Column {data-width=650}
   
 ### CoCo Plot
   
-```{r}
+```{r results_}
 library(tidyverse)
 
 results_ <- reactive({
@@ -94,7 +97,7 @@ results_ <- reactive({
 })
 ```
 
-```{r, fig.height=10, fig.width=10}
+```{r plot, fig.height=10, fig.width=10}
 library(plotly)
 
 renderPlotly({

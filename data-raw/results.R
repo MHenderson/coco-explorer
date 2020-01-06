@@ -21,3 +21,5 @@ arguments %>%
 
 src_sqlite(here("data", "results.sqlite3"), create = TRUE) %>%
   copy_to(results, temporary = FALSE, overwrite = TRUE)
+
+saveRDS(results, here::here("data", "results.rds"))

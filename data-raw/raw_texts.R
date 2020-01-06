@@ -14,4 +14,4 @@ raw_texts <- list(
   "19C" = unlist(lapply(corpus_filepaths('19C'), readLines))
 )
 
-save(raw_texts, file = here("data", "raw_texts.rda"))
+save(raw_texts, file = here::here("data", "raw_texts.rda"))
