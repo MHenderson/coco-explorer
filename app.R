@@ -1,7 +1,16 @@
 library(here)
-library(plotly)
 library(shiny)
 library(tidyverse)
+
+to_span_string <- function(x){
+  if (x[1] == x[2]) {
+    result <- paste0(x[1], "LR")
+  } else
+  {
+    result <- paste0(x[1], "L", x[2], "R")
+  }
+  return(result)
+}
 
 results <- read_csv(here("results.csv"))
 
@@ -59,7 +68,7 @@ ui <- fluidPage(
     ),
 
     mainPanel(
-      plotlyOutput("cocoPlot")
+      plotOutput("cocoPlot", height = "800px")
     )
   )
 )
@@ -70,11 +79,14 @@ server <- function(input, output) {
     results %>%
       filter(left == input$left_corpus) %>%
       filter(right == input$right_corpus) %>%
+      filter(span == to_span_string(abs(input$span))) %>%
+      filter(fdr == input$fdr) %>%
+      filter(!is.infinite(effect_size)) %>%
       arrange(x, effect_size) %>%
       mutate(n = row_number())
   })
 
-  output$cocoPlot <- renderPlotly({
+  output$cocoPlot <- renderPlot({
     results_() %>%
       ggplot(aes(reorder(paste(x, y), n), effect_size)) +
       geom_point(colour = "skyblue4") +
@@ -84,14 +96,8 @@ server <- function(input, output) {
         x = "",
         y = "Effect size"
       ) +
-      theme(
-        panel.border = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.text.y  = element_text(family = "monospace")
-      ) +
-      geom_hline(yintercept = 0, colour = "grey", linetype = 2, size = 0.5) -> p
-    ggplotly(p)
+      theme_minimal() +
+      geom_hline(yintercept = 0, colour = "grey", linetype = 2, size = 0.5)
   })
     
 }
