@@ -16,10 +16,10 @@ results <- read_csv(here("results.csv"))
 
 corpora <- list(
   "19th Century Novels" = "19C",
-  "AAW" = "AAW",
-  "Charles Dickens" = "DNov",
-  "ArTs" = "ArTs",
-  "ChiLit" = "ChiLit"
+  "AAW"                 = "AAW",
+  "Charles Dickens"     = "DNov",
+  "ArTs"                = "ArTs",
+  "ChiLit"              = "ChiLit"
 )
 
 left_default <- "AAW"
@@ -32,38 +32,38 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput(
-        inputId = "left_corpus",
-        label = h3("Left corpus"), 
-        choices = corpora, 
+        inputId  = "left_corpus",
+        label    = h3("Left corpus"), 
+        choices  = corpora, 
         selected = left_default
       ),
       selectInput(
-        inputId = "right_corpus",
-        label = h3("Right corpus"), 
-        choices = corpora, 
+        inputId  = "right_corpus",
+        label    = h3("Right corpus"), 
+        choices  = corpora, 
         selected = right_default
       ),
       radioButtons(
         inputId = "nodes",
-        label = h3("Nodes"),
+        label   = h3("Nodes"),
         choices = list(
           "Body parts (back, eye, eyes, forehead, hand, hands, head, shoulder)" = c('back', 'eye', 'eyes', 'forehead', 'hand', 'hands', 'head', 'shoulder')
         )
       ),
       sliderInput(
         inputId = "span",
-        label = h3("Span"),
-        min = -10, 
-        max = 10,
-        value = c(-5, 5)
+        label   = h3("Span"),
+        min     = -10, 
+        max     = 10,
+        value   = c(-5, 5)
       ),
       numericInput(
         inputId = "fdr",
-        label = h3("False Discovery Rate"),
-        min = 0.01,
-        max = 1,
-        step = 0.01,
-        value = 0.01
+        label   = h3("False Discovery Rate"),
+        min     = 0.01,
+        max     = 1,
+        step    = 0.01,
+        value   = 0.01
       )
     ),
 
