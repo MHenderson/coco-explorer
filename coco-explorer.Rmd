@@ -16,18 +16,18 @@ library(here)
 
 #ggplot2::theme_set(hrbrthemes::theme_ipsum())
 
-results <- read_rds(here("data", "results.rds"))
+results <- readr::read_csv(here("results.csv"))
 
 corpora <- list(
   "19th Century Novels" = "19C",
-  "Jane Austen" = "austen",
+  "AAW" = "AAW",
   "Charles Dickens" = "DNov",
-  "Thomas Hardy" = "hardy",
-  "D. H. Lawrence" = "lawrence"
+  "ArTs" = "ArTs",
+  "ChiLit" = "ChiLit"
 )
 
-left_default <- "austen"
-right_default <- "hardy"
+left_default <- "AAW"
+right_default <- "ChiLit"
 ```
 
 Inputs {.sidebar}
