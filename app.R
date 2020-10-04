@@ -83,21 +83,32 @@ server <- function(input, output) {
       filter(fdr == input$fdr) %>%
       filter(!is.infinite(effect_size)) %>%
       arrange(x, effect_size) %>%
-      mutate(n = row_number())
+      mutate(
+        p = paste(x, y),
+        n = row_number()
+      )
   })
 
   output$cocoPlot <- renderPlot({
     results_() %>%
-      ggplot(aes(reorder(paste(x, y), n), effect_size)) +
+      group_by(x) %>%
+      ggplot(aes(reorder(p, n), effect_size)) +
       geom_point(colour = "skyblue4") +
-      geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), colour = "seashell4") +
+      geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper),
+                    colour = "seashell4") +
       coord_flip() +
       labs(
         x = "",
         y = "Effect size"
       ) +
-      theme_minimal() +
-      geom_hline(yintercept = 0, colour = "grey", linetype = 2, size = 0.5)
+      geom_hline(
+        yintercept = 0,
+        colour    = "grey",
+        linetype  = 2,
+        size      = 0.5
+      ) +
+      facet_wrap(~ x, ncol = 1, scales = "free_y") +
+      theme_light()
   })
     
 }
