@@ -84,11 +84,11 @@ server <- function(input, output) {
   
   results_ <- reactive({
     results %>%
-      filter(left == input$left_corpus) %>%
-      filter(right == input$right_corpus) %>%
-      filter(x %in% input$nodes) %>%
-      filter(span == to_span_string(abs(input$span))) %>%
-      filter(fdr == input$fdr) %>%
+      filter(left == req(input$left_corpus)) %>%
+      filter(right == req(input$right_corpus)) %>%
+      filter(x %in% req(input$nodes)) %>%
+      filter(span == to_span_string(abs(req(input$span)))) %>%
+      filter(fdr == req(input$fdr)) %>%
       filter(!is.infinite(effect_size)) %>%
       arrange(x, effect_size) %>%
       mutate(
