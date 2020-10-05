@@ -16,11 +16,11 @@ to_span_string <- function(x){
 results <- read_csv(here("results.csv"))
 
 corpora <- list(
-  "19C"                 = "19C",
-  "AAW"                 = "AAW",
-  "DNov"                = "DNov",
-  "ArTs"                = "ArTs",
-  "ChiLit"              = "ChiLit"
+  "19C"    = "19C",
+  "AAW"    = "AAW",
+  "DNov"   = "DNov",
+  "ArTs"   = "ArTs",
+  "ChiLit" = "ChiLit"
 )
 
 left_default <- "AAW"
@@ -36,13 +36,13 @@ ui <- fluidPage(
     sidebarPanel(
       selectInput(
         inputId  = "left_corpus",
-        label    = h3("Left corpus"), 
+        label    = "Left corpus", 
         choices  = corpora, 
         selected = left_default
       ),
       selectInput(
         inputId  = "right_corpus",
-        label    = h3("Right corpus"), 
+        label    = "Right corpus", 
         choices  = corpora, 
         selected = right_default
       ),
@@ -60,14 +60,14 @@ ui <- fluidPage(
       ),
       sliderInput(
         inputId = "span",
-        label   = h3("Span"),
+        label   = "Span",
         min     = -10, 
         max     = 10,
         value   = c(-5, 5)
       ),
       numericInput(
         inputId = "fdr",
-        label   = h3("False Discovery Rate"),
+        label   = "False Discovery Rate",
         min     = 0.01,
         max     = 1,
         step    = 0.01,
