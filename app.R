@@ -1,5 +1,6 @@
 library(here)
 library(shiny)
+library(shinyWidgets)
 library(tidyverse)
 
 to_span_string <- function(x){
@@ -15,15 +16,17 @@ to_span_string <- function(x){
 results <- read_csv(here("results.csv"))
 
 corpora <- list(
-  "19th Century Novels" = "19C",
+  "19C"                 = "19C",
   "AAW"                 = "AAW",
-  "Charles Dickens"     = "DNov",
+  "DNov"                = "DNov",
   "ArTs"                = "ArTs",
   "ChiLit"              = "ChiLit"
 )
 
 left_default <- "AAW"
 right_default <- "ChiLit"
+
+body_parts <- c('back', 'eye', 'eyes', 'forehead', 'hand', 'hands', 'head', 'shoulder')
 
 ui <- fluidPage(
 
@@ -43,12 +46,17 @@ ui <- fluidPage(
         choices  = corpora, 
         selected = right_default
       ),
-      radioButtons(
-        inputId = "nodes",
-        label   = h3("Nodes"),
-        choices = list(
-          "Body parts (back, eye, eyes, forehead, hand, hands, head, shoulder)" = c('back', 'eye', 'eyes', 'forehead', 'hand', 'hands', 'head', 'shoulder')
-        )
+      pickerInput(
+        inputId = "nodes", 
+        label = "Nodes", 
+        choices = body_parts,
+        options = list(
+          `actions-box` = TRUE, 
+          size = 10,
+          `selected-text-format` = "count > 3"
+        ), 
+        multiple = TRUE,
+        selected = body_parts
       ),
       sliderInput(
         inputId = "span",
@@ -66,9 +74,8 @@ ui <- fluidPage(
         value   = 0.01
       )
     ),
-
     mainPanel(
-      plotOutput("cocoPlot", height = "800px")
+      plotOutput("cocoPlot", height = "1000px")
     )
   )
 )
@@ -79,6 +86,7 @@ server <- function(input, output) {
     results %>%
       filter(left == input$left_corpus) %>%
       filter(right == input$right_corpus) %>%
+      filter(x %in% input$nodes) %>%
       filter(span == to_span_string(abs(input$span))) %>%
       filter(fdr == input$fdr) %>%
       filter(!is.infinite(effect_size)) %>%
@@ -103,9 +111,9 @@ server <- function(input, output) {
       ) +
       geom_hline(
         yintercept = 0,
-        colour    = "grey",
-        linetype  = 2,
-        size      = 0.5
+        colour     = "grey",
+        linetype   = 2,
+        size       = 0.5
       ) +
       facet_wrap(~ x, ncol = 1, scales = "free_y") +
       theme_light()
