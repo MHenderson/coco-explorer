@@ -1,6 +1,7 @@
 library(here)
 library(shiny)
 library(shinyWidgets)
+library(stopwords)
 library(tidyverse)
 
 to_span_string <- function(x){
@@ -27,6 +28,8 @@ left_default <- "AAW"
 right_default <- "ChiLit"
 
 body_parts <- c('back', 'eye', 'eyes', 'forehead', 'hand', 'hands', 'head', 'shoulder')
+
+stop_words <- stopwords("en", source = "nltk")
 
 ui <- fluidPage(
 
@@ -72,7 +75,19 @@ ui <- fluidPage(
         max     = 1,
         step    = 0.01,
         value   = 0.01
-      )
+      ),
+      pickerInput(
+        inputId = "stop_words", 
+        label = "Stop Words", 
+        choices = stop_words,
+        options = list(
+          `actions-box` = TRUE, 
+          size = 10,
+          `selected-text-format` = "count > 3"
+        ), 
+        multiple = TRUE,
+        selected = stop_words
+      ),
     ),
     mainPanel(
       plotOutput("cocoPlot", height = "1000px")
@@ -84,6 +99,7 @@ server <- function(input, output) {
   
   results_ <- reactive({
     results %>%
+      filter(!(y %in% req(input$stop_words))) %>%
       filter(left == req(input$left_corpus)) %>%
       filter(right == req(input$right_corpus)) %>%
       filter(x %in% req(input$nodes)) %>%
