@@ -1,4 +1,3 @@
-library(here)
 library(shiny)
 library(shinyWidgets)
 library(stopwords)
@@ -14,7 +13,7 @@ to_span_string <- function(x){
   return(result)
 }
 
-results <- read_csv(here("results.csv"))
+results <- read_csv("https://raw.githubusercontent.com/MHenderson/coco-data/refs/heads/main/results.csv")
 
 corpora <- list(
   "19C"    = "19C",
