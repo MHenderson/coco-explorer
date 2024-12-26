@@ -1,7 +1,7 @@
+library(dplyr)
+library(ggplot2)
+library(readr)
 library(shiny)
-library(shinyWidgets)
-library(stopwords)
-library(tidyverse)
 
 to_span_string <- function(x){
   if (x[1] == x[2]) {
@@ -13,7 +13,7 @@ to_span_string <- function(x){
   return(result)
 }
 
-results <- read_csv("https://raw.githubusercontent.com/MHenderson/coco-data/refs/heads/main/results.csv")
+results <- read_csv("results.csv")
 
 corpora <- list(
   "19C"    = "19C",
@@ -27,8 +27,6 @@ left_default <- "AAW"
 right_default <- "ChiLit"
 
 body_parts <- c('back', 'eye', 'eyes', 'forehead', 'hand', 'hands', 'head', 'shoulder')
-
-stop_words <- stopwords("en", source = "nltk")
 
 ui <- fluidPage(
 
@@ -58,7 +56,7 @@ ui <- fluidPage(
           `selected-text-format` = "count > 3"
         ), 
         multiple = TRUE,
-        selected = body_parts
+        selected = body_parts[1:2]
       ),
       sliderInput(
         inputId = "span",
@@ -85,14 +83,14 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   results_ <- reactive({
-    results %>%
-      filter(left == req(input$left_corpus)) %>%
-      filter(right == req(input$right_corpus)) %>%
-      filter(x %in% req(input$nodes)) %>%
-      filter(span == to_span_string(abs(req(input$span)))) %>%
-      filter(fdr == req(input$fdr)) %>%
-      filter(!is.infinite(effect_size)) %>%
-      arrange(x, effect_size) %>%
+    results |>
+      filter(left == req(input$left_corpus)) |>
+      filter(right == req(input$right_corpus)) |>
+      filter(x %in% req(input$nodes)) |>
+      filter(span == to_span_string(abs(req(input$span)))) |>
+      filter(fdr == req(input$fdr)) |>
+      filter(!is.infinite(effect_size)) |>
+      arrange(x, effect_size) |>
       mutate(
         p = paste(x, y),
         n = row_number()
@@ -100,8 +98,8 @@ server <- function(input, output) {
   })
 
   output$cocoPlot <- renderPlot({
-    results_() %>%
-      group_by(x) %>%
+    results_() |>
+      group_by(x) |>
       ggplot(aes(reorder(p, n), effect_size)) +
       geom_point(colour = "skyblue4") +
       geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper),
