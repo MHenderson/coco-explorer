@@ -2,6 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(readr)
 library(shiny)
+library(shinyWidgets)
 
 to_span_string <- function(x){
   if (x[1] == x[2]) {
